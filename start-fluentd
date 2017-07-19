@@ -104,4 +104,4 @@ cat << 'EOF' >> /fluentd/etc/fluent.conf
 </match>
 EOF
 
-gosu fluent "$@"
+fluentd -c /fluentd/etc/${FLUENTD_CONF} -p /fluentd/plugins $FLUENTD_OPT
