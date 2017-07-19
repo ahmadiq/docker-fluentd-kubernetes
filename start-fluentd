@@ -3,18 +3,18 @@
 uid=${FLUENT_UID:-1000}
 
 # check if a old fluent user exists and delete it
-#cat /etc/passwd | grep fluent
-#if [ $? -eq 0 ]; then
-#    deluser fluent
-#fi
+cat /etc/passwd | grep fluent
+if [ $? -eq 0 ]; then
+    deluser fluent
+fi
 
 # (re)add the fluent user with $FLUENT_UID
-#useradd -u ${uid} -o -c "" -m fluent
-#export HOME=/home/fluent
+useradd -u ${uid} -o -c "" -m fluent
+export HOME=/home/fluent
 
 # chown home and data folder
-#chown -R fluent /home/fluent
-#chown -R fluent /fluentd
+chown -R fluent /home/fluent
+chown -R fluent /fluentd
 
 ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-es-logging.default.svc}
 ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
@@ -36,7 +36,7 @@ KUBERNETES_PRESERVE_JSON_LOG=${KUBERNETES_PRESERVE_JSON_LOG:-true}
 KUBERNETES_URL=${KUBERNETES_URL:-https://kubernetes.default.svc}
 KUBERNETES_VERIFY_SSL=${KUBERNETES_VERIFY_SSL:-true}
 
-cat << EOF >> /fluentd/etc/fluent.conf
+cat << EOF >> /fluentd/etc/${FLUENTD_CONF}
 # input plugin that exports metrics
 <source>
   @type prometheus
@@ -100,8 +100,8 @@ cat << EOF >> /fluentd/etc/fluent.conf
   reload_connections false
 EOF
 
-cat << 'EOF' >> /fluentd/etc/fluent.conf
+cat << 'EOF' >> /fluentd/etc/${FLUENTD_CONF}
 </match>
 EOF
 
-fluentd -c /fluentd/etc/${FLUENTD_CONF} -p /fluentd/plugins $FLUENTD_OPT
+gosu fluent "$@"

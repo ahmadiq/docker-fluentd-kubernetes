@@ -22,6 +22,8 @@ RUN apt-get update \
  && gem install fluent-plugin-prometheus -v 0.2.1 \
  && gem cleanup fluentd
 
-ADD start-fluentd /usr/bin/start-fluentd
+COPY start-fluentd /bin/
+RUN chmod +x /bin/start-fluentd
 
-ENTRYPOINT ["/usr/bin/start-fluentd"]
+ENTRYPOINT ["/bin/start-fluentd"]
+CMD fluentd -c /fluentd/etc/${FLUENTD_CONF} -p /fluentd/plugins $FLUENTD_OPT
