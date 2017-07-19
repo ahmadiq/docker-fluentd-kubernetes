@@ -104,4 +104,4 @@ cat << 'EOF' >> /fluentd/etc/${FLUENTD_CONF}
 </match>
 EOF
 
-gosu fluent "$@"
+gosu root "$@"
